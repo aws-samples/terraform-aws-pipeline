@@ -39,6 +39,7 @@ variable "build_timeout" {
 variable "build_override" {
   description = "Override CodeBuild images and buildspecs"
   type = object({
+    directory       = optional(string, ".")
     plan_buildspec  = optional(string)
     plan_image      = optional(string)
     apply_buildspec = optional(string)
@@ -129,11 +130,6 @@ variable "tagnag_version" {
     condition     = can(regex("^\\d+\\.\\d+\\.\\d+$", var.tagnag_version))
     error_message = "tagnag version must use format x.y.z"
   }
-}
-
-variable "terraform_directory" {
-  type    = string
-  default = "."
 }
 
 variable "terraform_version" {
