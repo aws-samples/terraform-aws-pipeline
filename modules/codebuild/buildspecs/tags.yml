@@ -10,5 +10,5 @@ phases:
 
   build:
     commands:
-      - cd "$CODEBUILD_SRC_DIR"
+      - cd "$CODEBUILD_SRC_DIR/$TERRAFORM_DIRECTORY"
       - tag-nag . --tags $TAGS

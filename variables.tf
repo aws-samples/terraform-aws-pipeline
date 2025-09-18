@@ -131,6 +131,11 @@ variable "tagnag_version" {
   }
 }
 
+variable "terraform_directory" {
+  type    = string
+  default = "."
+}
+
 variable "terraform_version" {
   type    = string
   default = "1.8.0"
