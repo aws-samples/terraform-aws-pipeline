@@ -24,5 +24,5 @@ locals {
     TAGNAG_VERSION = var.tagnag_version
   })
 
-  region = can(data.aws_region.current.region, data.aws_region.current.name)
+  region = data.aws_region.current.name
 }
