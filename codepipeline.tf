@@ -115,7 +115,7 @@ data "aws_iam_policy_document" "codepipeline-assume-role" {
       test     = "StringLike"
       variable = "aws:SourceArn"
       values = [
-        "arn:aws:codepipeline:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:${var.pipeline_name}"
+        "arn:aws:codepipeline:${local.region}:${data.aws_caller_identity.current.account_id}:${var.pipeline_name}"
       ]
     }
   }
@@ -154,7 +154,7 @@ data "aws_iam_policy_document" "codepipeline" {
       "codebuild:StartBuild"
     ]
     resources = [
-      "arn:aws:codebuild:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:project/${var.pipeline_name}-*"
+      "arn:aws:codebuild:${local.region}:${data.aws_caller_identity.current.account_id}:project/${var.pipeline_name}-*"
     ]
   }
 
@@ -169,7 +169,7 @@ data "aws_iam_policy_document" "codepipeline" {
       "codestar-connections:UseConnection"
     ]
     resources = [
-      var.connection == null ? "arn:aws:codecommit:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:${var.repo}" : var.connection
+      var.connection == null ? "arn:aws:codecommit:${local.region}:${data.aws_caller_identity.current.account_id}:${var.repo}" : var.connection
     ]
   }
 }

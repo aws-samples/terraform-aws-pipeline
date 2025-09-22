@@ -23,4 +23,6 @@ locals {
     TAGS           = var.tags
     TAGNAG_VERSION = var.tagnag_version
   })
+
+  region = data.aws_region.current.name
 }

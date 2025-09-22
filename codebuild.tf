@@ -60,7 +60,7 @@ data "aws_iam_policy_document" "codebuild_validate_assume" {
       test     = "StringLike"
       variable = "aws:SourceArn"
       values = [
-        "arn:aws:codebuild:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:project/${var.pipeline_name}-*"
+        "arn:aws:codebuild:${local.region}:${data.aws_caller_identity.current.account_id}:project/${var.pipeline_name}-*"
       ]
     }
   }
@@ -78,8 +78,8 @@ data "aws_iam_policy_document" "codebuild_execution_assume" {
       test     = "StringEquals"
       variable = "aws:SourceArn"
       values = [
-        "arn:aws:codebuild:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:project/${var.pipeline_name}-plan",
-        "arn:aws:codebuild:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:project/${var.pipeline_name}-apply"
+        "arn:aws:codebuild:${local.region}:${data.aws_caller_identity.current.account_id}:project/${var.pipeline_name}-plan",
+        "arn:aws:codebuild:${local.region}:${data.aws_caller_identity.current.account_id}:project/${var.pipeline_name}-apply"
       ]
     }
   }
@@ -109,7 +109,7 @@ data "aws_iam_policy_document" "codebuild" {
       "logs:PutLogEvents"
     ]
     resources = [
-      "arn:aws:logs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:log-group:*"
+      "arn:aws:logs:${local.region}:${data.aws_caller_identity.current.account_id}:log-group:*"
     ]
   }
 
@@ -177,7 +177,7 @@ data "aws_iam_policy_document" "codebuild" {
 
       ]
       resources = [
-        "arn:aws:ec2:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:network-interface/*"
+        "arn:aws:ec2:${local.region}:${data.aws_caller_identity.current.account_id}:network-interface/*"
       ]
       condition {
         test     = "StringEquals"
@@ -191,7 +191,7 @@ data "aws_iam_policy_document" "codebuild" {
         variable = "ec2:Subnet"
         values = [
           for id in var.vpc["subnets"] :
-          "arn:aws:ec2:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:subnet/${id}"
+          "arn:aws:ec2:${local.region}:${data.aws_caller_identity.current.account_id}:subnet/${id}"
         ]
       }
     }
