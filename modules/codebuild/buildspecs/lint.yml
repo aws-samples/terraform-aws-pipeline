@@ -15,7 +15,7 @@ phases:
 
   build:
     commands:   
-      - cd "$CODEBUILD_SRC_DIR"
+      - cd "$CODEBUILD_SRC_DIR/$TERRAFORM_DIRECTORY"
       - terraform init -backend=false
       - tflint --init
       - tflint
