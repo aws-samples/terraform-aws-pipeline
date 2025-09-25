@@ -14,8 +14,8 @@ phases:
       - if [ "${file}" = "${sha}" ]; then unzip -o tflint_linux_amd64.zip ; else exit 1 ; fi
 
   build:
-    commands:   
-      - cd "$CODEBUILD_SRC_DIR"
+    commands:
+      - cd "$CODEBUILD_SRC_DIR/$TERRAFORM_DIRECTORY"
       - terraform init -backend=false
       - tflint --init
       - tflint

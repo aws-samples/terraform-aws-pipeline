@@ -3,7 +3,7 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-       python: 3.12
+      python: 3.12
     commands:
       - cd /usr/bin
       - yum install -y yum-utils
@@ -13,15 +13,15 @@ phases:
       - pip3 install checkov==${CHECKOV_VERSION}
 
   build:
-    commands:   
-      - cd "$CODEBUILD_SRC_DIR"
+    commands:
+      - cd "$CODEBUILD_SRC_DIR/$TERRAFORM_DIRECTORY"
       - |
         if [ -z "${CHECKOV_SKIPS}" ]; then 
           checkov --directory ./ --skip-path ./deploy -o junitxml > checkov.xml
         else
           checkov --directory ./ --skip-path ./deploy --skip-check ${CHECKOV_SKIPS} -o junitxml > checkov.xml
         fi
-      - echo "Checkov complete. Report available in CodeBuild project > Reports" 
+      - echo "Checkov complete. Report available in CodeBuild project > Reports"
 reports:
   ${SAST_REPORT_ARN}:
     files:
