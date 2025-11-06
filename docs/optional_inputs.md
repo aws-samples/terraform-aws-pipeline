@@ -1,5 +1,18 @@
 # Optional inputs
 
+```hcl
+module "pipeline" {
+  ...
+  branch                = "main"
+  mode                  = "SUPERSEDED"
+  detect_changes        = false
+  kms_key               = aws_kms_key.this.arn
+  access_logging_bucket = aws_s3_bucket.this.id
+  artifact_retention    = 90
+  log_retention         = 90
+}
+```
+
 `branch` is the branch to source. It defaults to `main`.
 
 `mode` is [pipeline execution mode](https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts-how-it-works.html#concepts-how-it-works-executions). It defaults to `SUPERSEDED`.
@@ -12,7 +25,25 @@
 
 `artifact_retention` controls the S3 artifact bucket retention period. It defaults to 90 (days). 
 
-`log_retention` controls the CloudWatch log group retention period. It defaults to 90 (days). 
+`log_retention` controls the CloudWatch log group retention period. It defaults to 90 (days).
+
+```hcl
+module "pipeline" {
+  ...
+  codebuild_policy  = aws_iam_policy.this.arn
+  build_timeout     = 10
+  terraform_version = "1.8.0"
+  checkov_version   = "3.2.0"
+  tflint_version    = "0.55.0"
+
+  build_override = {
+    plan_buildspec  = file("./my_plan.yml")
+    plan_image      = "aws/codebuild/amazonlinux2-x86_64-standard:5.0"
+    apply_buildspec = file("./my_apply.yml")
+    apply_image     = "hashicorp/terraform:latest"
+  }
+}
+```
 
 `codebuild_policy` replaces the [AWSAdministratorAccess](https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AdministratorAccess.html) IAM policy. This can be used if you want to scope the permissions of the pipeline. 
 
@@ -24,7 +55,37 @@
 
 `tflint_version` controls the [tflint](https://github.com/terraform-linters/tflint) version. It defaults to 0.48.0.
 
-`build_override` can replace the existing CodeBuild buildspecs and images with your own. 
+`build_override` can replace the existing CodeBuild buildspecs and images with your own.
+
+```hcl
+module "pipeline" {
+  ...
+  vpc = {
+    vpc_id             = "vpc-011a22334455bb66c",
+    subnets            = ["subnet-011aabbcc2233d4ef"],
+    security_group_ids = ["sg-001abcd2233ee4455"],
+  }
+
+  notifications = {
+    sns_topic   = aws_sns_topic.this.arn
+    detail_type = "BASIC"
+    events = [
+      "codepipeline-pipeline-pipeline-execution-failed",
+      "codepipeline-pipeline-pipeline-execution-succeeded"
+    ]
+  }
+  
+  tags = join(",", [
+    "Environment[Dev,Prod]",
+    "Source"
+  ])
+  tagnag_version = "0.7.9"
+
+  checkov_skip = [
+    "CKV_AWS_144", #Ensure that S3 bucket has cross-region replication enabled
+  ]
+}
+```
 
 `vpc` configures the CodeBuild projects to [run in a VPC](https://docs.aws.amazon.com/codebuild/latest/userguide/vpc-support.html).  
 
