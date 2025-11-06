@@ -116,7 +116,6 @@ See [optional inputs](./docs/optional_inputs.md) for descriptions.
 - [Architecture](./docs/architecture.md)
 - [Setup a cross account pipeline](./docs/cross_account_pipeline.md)
 - [Troubleshooting](./docs/troubleshooting.md)
-- [Best practices](./docs/best_practices.md)
 
 ## Related Resources
 

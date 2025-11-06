@@ -45,7 +45,7 @@ module "pipeline" {
 }
 ```
 
-`codebuild_policy` replaces the [AWSAdministratorAccess](https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AdministratorAccess.html) IAM policy. This can be used if you want to scope the permissions of the pipeline. 
+`codebuild_policy` replaces the [AWSAdministratorAccess](https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AdministratorAccess.html) IAM policy. This can be used if you want to scope the permissions of the pipeline. The CodeBuild execution role uses the [AWSAdministratorAccess](https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AdministratorAccess.html) IAM policyas this pattern is designed for a wide audience to deploy any resource to an AWS account. It assumes there are strong organizational controls in place and good segregation practices at the AWS account level. 
 
 `build_timeout` is the CodeBuild project build timeout. It defaults to 10 (minutes). 
 
@@ -74,25 +74,36 @@ module "pipeline" {
       "codepipeline-pipeline-pipeline-execution-succeeded"
     ]
   }
-  
-  tags = join(",", [
-    "Environment[Dev,Prod]",
-    "Source"
-  ])
-  tagnag_version = "0.7.9"
 
-  checkov_skip = [
-    "CKV_AWS_144", #Ensure that S3 bucket has cross-region replication enabled
-  ]
-}
 ```
 
 `vpc` configures the CodeBuild projects to [run in a VPC](https://docs.aws.amazon.com/codebuild/latest/userguide/vpc-support.html).  
 
 `notifications` creates a [CodeStar notification](https://docs.aws.amazon.com/dtconsole/latest/userguide/welcome.html) for the pipeline. `sns_topic` is the SNS topic arn. `events` are the [notification events](https://docs.aws.amazon.com/dtconsole/latest/userguide/concepts.html#events-ref-pipeline). `detail_type` is either BASIC or FULL. The SNS topic must allow [codestar-notifications.amazonaws.com to publush to the topic](https://docs.aws.amazon.com/dtconsole/latest/userguide/notification-target-create.html). 
 
-`tags` enables tag validation with [tag-nag](https://github.com/jakebark/tag-nag). Input a list of tag keys and/or tag keys and values to enforce. Input must be passed as a string, see [commands](https://github.com/jakebark/tag-nag?tab=readme-ov-file#commands). 
+```hcl
+module "pipeline" {
+  ...
+  tags = join(",", [
+    "Environment[Dev,Prod]",
+    "Source"
+  ])
+  tagnag_version = "0.7.9"
+
+```
+
+`tags` enables tag validation with [tag-nag](https://github.com/jakebark/tag-nag). Input a list of tag keys and/or tag keys and values to enforce. Input must be passed as a string, see [commands](https://github.com/jakebark/tag-nag?tab=readme-ov-file#commands).
 
 `tagnag_version` controls the [tag-nag](https://github.com/jakebark/tag-nag) version. It defaults to 0.5.8.
 
+```hcl
+module "pipeline" {
+  ...
+  checkov_skip = [
+    "CKV_AWS_144", #Ensure that S3 bucket has cross-region replication enabled
+  ]
+}
+```
 `checkov_skip` defines [Checkov](https://www.checkov.io/) skips for the pipeline. This is useful for organization-wide policies, removing the need to add individual resource skips. 
+
+Checkov skips can be used where Checkov policies conflict with your organization's practices or design decisions. The `checkov_skip` module input allows you to set skips for all resources in your repository. For example, if your organization operates in a single region you may want to add `CKV_AWS_144` (Ensure that S3 bucket has cross-region replication enabled). For individual resource skips, you can still use [inline code comments](https://www.checkov.io/2.Basics/Suppressing%20and%20Skipping%20Policies.html).
