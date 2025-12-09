@@ -51,32 +51,36 @@ resource "aws_codepipeline" "this" {
     }
   }
 
-  stage {
-    name = "Plan"
-    action {
-      name            = "Plan"
-      category        = "Build"
-      owner           = "AWS"
-      provider        = "CodeBuild"
-      input_artifacts = ["source_output"]
-      version         = "1"
-      run_order       = 1
+  dynamic "stage" {
+    for_each = var.plan ? ["plan"] : []
+    content {
 
-      configuration = {
-        ProjectName = module.plan.codebuild_project.name
+      name = "Plan"
+      action {
+        name            = "Plan"
+        category        = "Build"
+        owner           = "AWS"
+        provider        = "CodeBuild"
+        input_artifacts = ["source_output"]
+        version         = "1"
+        run_order       = 1
+
+        configuration = {
+          ProjectName = module.plan.codebuild_project.name
+        }
       }
-    }
-    action {
-      name      = "Approval"
-      category  = "Approval"
-      owner     = "AWS"
-      provider  = "Manual"
-      version   = "1"
-      run_order = 2
+      action {
+        name      = "Approval"
+        category  = "Approval"
+        owner     = "AWS"
+        provider  = "Manual"
+        version   = "1"
+        run_order = 2
 
-      configuration = {
-        CustomData = "This action will approve the deployment of resources in ${var.pipeline_name}. Please review the plan action before approving."
+        configuration = {
+          CustomData = "This action will approve the deployment of resources in ${var.pipeline_name}. Please review the plan action before approving."
 
+        }
       }
     }
   }

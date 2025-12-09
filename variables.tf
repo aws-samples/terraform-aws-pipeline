@@ -117,6 +117,12 @@ variable "notifications" {
   default = null
 }
 
+variable "plan" {
+  description = "enable plan and manual approval stage"
+  type        = bool
+  default     = true
+}
+
 variable "tags" {
   description = "tags to check for"
   type        = string
