@@ -88,7 +88,7 @@ mainSteps:
     inputs:
       Service: codepipeline
       Api: StartPipelineExecution
-      pipelineName: '${var.pipeline_name}-PR'
+      pipelineName: '${local.pr_pipeline}'
       sourceRevisions:
         - actionName: Source
           revisionType: COMMIT_ID
