@@ -123,11 +123,13 @@ data "aws_iam_policy_document" "ssm_assume" {
 }
 
 resource "aws_iam_role_policy_attachment" "ssm" {
+  count      = var.pr_pipeline && var.connection == null ? 1 : 0
   role       = aws_iam_role.ssm[0].name
   policy_arn = aws_iam_policy.ssm[0].arn
 }
 
 resource "aws_iam_policy" "ssm" {
+  count  = var.pr_pipeline && var.connection == null ? 1 : 0
   name   = "${var.pipeline_name}-ssm"
   policy = data.aws_iam_policy_document.ssm.json
 }
