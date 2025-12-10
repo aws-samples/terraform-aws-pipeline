@@ -123,6 +123,12 @@ variable "plan" {
   default     = true
 }
 
+variable "pr_pipeline" {
+  description = "deploy a second pipeline to run plans for PRs"
+  type        = bool
+  default     = false
+}
+
 variable "tags" {
   description = "tags to check for"
   type        = string
