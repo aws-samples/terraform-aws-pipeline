@@ -122,6 +122,18 @@ data "aws_iam_policy_document" "codepipeline-assume-role" {
         "arn:aws:codepipeline:${local.region}:${data.aws_caller_identity.current.account_id}:${var.pipeline_name}"
       ]
     }
+    dynamic "condition" {
+      for_each = var.pr_pipeline && var.connection == null ? [var.pr_pipeline] : []
+      content {
+        test     = "StringLike"
+        variable = "aws:SourceArn"
+        values = [
+          "arn:aws:codepipeline:${local.region}:${data.aws_caller_identity.current.account_id}:${local.pr_pipeline}"
+        ]
+      }
+    }
+
+
   }
 }
 
@@ -187,76 +199,6 @@ resource "aws_codestarnotifications_notification_rule" "this" {
 
   target {
     address = var.notifications["sns_topic"]
-  }
-}
-
-resource "aws_codepipeline" "that" {
-  count          = var.pr_pipeline ? 1 : 0
-  name           = "${var.pipeline_name}-PR"
-  pipeline_type  = "V2"
-  role_arn       = aws_iam_role.codepipeline_role.arn
-  execution_mode = var.mode
-
-  artifact_store {
-    location = aws_s3_bucket.this.id
-    type     = "S3"
-  }
-
-  stage {
-    name = "Source"
-    action {
-      name             = "Source"
-      category         = "Source"
-      owner            = "AWS"
-      provider         = var.connection == null ? "CodeCommit" : "CodeStarSourceConnection"
-      version          = "1"
-      output_artifacts = ["source_output"]
-      configuration = {
-        RepositoryName       = var.connection == null ? var.repo : null
-        FullRepositoryId     = var.connection == null ? null : var.repo
-        ConnectionArn        = var.connection
-        BranchName           = var.connection == null ? "main" : var.branch
-        PollForSourceChanges = false
-        DetectChanges        = var.connection == null ? null : false
-      }
-    }
-  }
-
-  stage {
-    name = "Validation"
-    dynamic "action" {
-      for_each = var.tags == "" ? local.validation_stages : local.conditional_validation_stages
-      content {
-        name            = action.key
-        category        = "Test"
-        owner           = "AWS"
-        provider        = "CodeBuild"
-        input_artifacts = ["source_output"]
-        version         = "1"
-
-        configuration = {
-          ProjectName = module.validation[action.key].codebuild_project.name
-        }
-      }
-    }
-  }
-
-  stage {
-
-    name = "Plan"
-    action {
-      name            = "Plan"
-      category        = "Build"
-      owner           = "AWS"
-      provider        = "CodeBuild"
-      input_artifacts = ["source_output"]
-      version         = "1"
-      run_order       = 1
-
-      configuration = {
-        ProjectName = module.plan.codebuild_project.name
-      }
-    }
   }
 }
 
