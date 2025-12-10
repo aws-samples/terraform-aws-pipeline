@@ -63,6 +63,16 @@ data "aws_iam_policy_document" "codebuild_validate_assume" {
         "arn:aws:codebuild:${local.region}:${data.aws_caller_identity.current.account_id}:project/${var.pipeline_name}-*"
       ]
     }
+    dynamic "condition" {
+      for_each = var.pr_pipeline && var.connection == null ? [var.pr_pipeline] : []
+      content {
+        test     = "StringLike"
+        variable = "aws:SourceArn"
+        values = [
+          "arn:aws:codebuild:${local.region}:${data.aws_caller_identity.current.account_id}:project/${local.pr_pipeline}-*"
+        ]
+      }
+    }
   }
 }
 
@@ -81,6 +91,17 @@ data "aws_iam_policy_document" "codebuild_execution_assume" {
         "arn:aws:codebuild:${local.region}:${data.aws_caller_identity.current.account_id}:project/${var.pipeline_name}-plan",
         "arn:aws:codebuild:${local.region}:${data.aws_caller_identity.current.account_id}:project/${var.pipeline_name}-apply"
       ]
+    }
+    dynamic "condition" {
+      for_each = var.pr_pipeline && var.connection == null ? [var.pr_pipeline] : []
+      content {
+        test     = "StringLike"
+        variable = "aws:SourceArn"
+        values = [
+          "arn:aws:codebuild:${local.region}:${data.aws_caller_identity.current.account_id}:project/${local.pr_pipeline}-plan",
+          "arn:aws:codebuild:${local.region}:${data.aws_caller_identity.current.account_id}:project/${local.pr_pipeline}-apply"
+        ]
+      }
     }
   }
 }
