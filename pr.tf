@@ -155,7 +155,7 @@ resource "aws_cloudwatch_event_rule" "pr" {
     source      = ["aws.codecommit"]
     detail-type = ["CodeCommit Pull Request State Change"]
     detail = {
-      event          = ["pullRequestCreated"]
+      event          = ["pullRequestCreated", "pullRequestSourceBranchUpdated"]
       repositoryName = [var.repo]
     }
   })
