@@ -10,24 +10,6 @@ Deploy Terraform with Terraform.
 - An existing AWS CodeCommit repository *OR* an [AWS CodeConnection connection](https://docs.aws.amazon.com/dtconsole/latest/userguide/welcome-connections.html) to the third-party source and repo of your choice (GitHub, Gitlab, etc)
 - [Remote state](https://developer.hashicorp.com/terraform/language/state/remote) that the pipeline can access (using the CodeBuild IAM role)  
 
-## Deployment
-
-This module must be deployed to a separate repository to the code you want to push through it.
-
-```
-your repo
-   modules
-   backend.tf 
-   main.tf
-   provider.tf
-   variables.tf    
-
-pipeline repo 
-   main.tf <--module deployed here
-```
-
-Segregation enables the pipeline to run commands against the code in "your repo" without affecting the pipeline infrastructure. 
-
 ## Module Inputs
 
 AWS Codecommit:
@@ -39,6 +21,8 @@ module "pipeline" {
   repo          = "codecommit-repo-name"
 }
 ```
+If you are using CodeCommit, the module must be deployed to a separate repository to the code that you want to push through it. See [codecommit deployment](./docs/codecommit_deployment.md)
+
 Third-party service:
 ```hcl
 module "pipeline" {
@@ -116,6 +100,7 @@ See [optional inputs](./docs/optional_inputs.md) for descriptions.
 - [Optional inputs](./docs/optional_inputs.md)
 - [Architecture](./docs/architecture.md)
 - [Setup a cross account pipeline](./docs/cross_account_pipeline.md)
+- [Codecommit deployment](./docs/codecommit_deployment.md)
 - [Troubleshooting](./docs/troubleshooting.md)
 
 ## Related Resources
