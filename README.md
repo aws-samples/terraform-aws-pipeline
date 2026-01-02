@@ -34,7 +34,7 @@ AWS Codecommit:
 ```hcl
 module "pipeline" {
   source        = "aws-samples/pipeline/aws"
-  version       = "2.3.x"
+  version       = "2.4.x"
   pipeline_name = "pipeline-name"
   repo          = "codecommit-repo-name"
 }
@@ -43,7 +43,7 @@ Third-party service:
 ```hcl
 module "pipeline" {
   source        = "aws-samples/pipeline/aws"
-  version       = "2.3.x"
+  version       = "2.4.x"
   pipeline_name = "pipeline-name"
   repo          = "organization/repo"
   connection    = aws_codestarconnections_connection.this.arn
