@@ -39,6 +39,7 @@ variable "build_timeout" {
 variable "build_override" {
   description = "Override CodeBuild images and buildspecs"
   type = object({
+    directory       = optional(string, ".")
     plan_buildspec  = optional(string)
     plan_image      = optional(string)
     apply_buildspec = optional(string)

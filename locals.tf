@@ -13,11 +13,12 @@ locals {
   })
 
   env_var = {
-    CHECKOV_SKIPS   = join(",", "${var.checkov_skip}")
-    CHECKOV_VERSION = var.checkov_version
-    SAST_REPORT_ARN = aws_codebuild_report_group.sast.arn
-    TF_VERSION      = var.terraform_version
-    TFLINT_VERSION  = var.tflint_version
+    CHECKOV_SKIPS       = join(",", "${var.checkov_skip}")
+    CHECKOV_VERSION     = var.checkov_version
+    SAST_REPORT_ARN     = aws_codebuild_report_group.sast.arn
+    TF_VERSION          = var.terraform_version
+    TFLINT_VERSION      = var.tflint_version
+    TERRAFORM_DIRECTORY = var.build_override["directory"]
   }
   conditional_env_var = merge(local.env_var, {
     TAGS           = var.tags

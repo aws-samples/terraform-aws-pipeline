@@ -14,7 +14,7 @@ phases:
 
   build:
     commands:   
-      - cd "$CODEBUILD_SRC_DIR"
+      - cd "$CODEBUILD_SRC_DIR/$TERRAFORM_DIRECTORY"
       - |
         if [ -z "${CHECKOV_SKIPS}" ]; then 
           checkov --directory ./ --skip-path ./deploy -o junitxml > checkov.xml
