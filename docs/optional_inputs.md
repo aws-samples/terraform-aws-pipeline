@@ -37,6 +37,7 @@ module "pipeline" {
   tflint_version    = "0.55.0"
 
   build_override = {
+    directory       = "./terraform"
     plan_buildspec  = file("./my_plan.yml")
     plan_image      = "aws/codebuild/amazonlinux2-x86_64-standard:5.0"
     apply_buildspec = file("./my_apply.yml")
@@ -44,6 +45,8 @@ module "pipeline" {
   }
 }
 ```
+
+`directory` sets the location of the terraform code. It defaults to the current working directory.
 
 `codebuild_policy` replaces the [AWSAdministratorAccess](https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AdministratorAccess.html) IAM policy. This can be used if you want to scope the permissions of the pipeline. The CodeBuild execution role uses the [AWSAdministratorAccess](https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AdministratorAccess.html) IAM policyas this pattern is designed for a wide audience to deploy any resource to an AWS account. It assumes there are strong organizational controls in place and good segregation practices at the AWS account level. 
 
