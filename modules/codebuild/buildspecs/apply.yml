@@ -3,6 +3,6 @@ version: 0.2
 phases:
   build:
     commands:
-      - cd "$CODEBUILD_SRC_DIR"
+      - cd "$CODEBUILD_SRC_DIR/$TERRAFORM_DIRECTORY"
       - terraform init
       - terraform apply -auto-approve
