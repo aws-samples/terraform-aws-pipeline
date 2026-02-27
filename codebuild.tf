@@ -222,3 +222,9 @@ resource "aws_cloudwatch_log_group" "this" {
   retention_in_days = var.log_retention
   kms_key_id        = var.kms_key
 }
+
+// to be removed next major version
+moved {
+  from = module.plan
+  to   = module.plan[0]
+}
