@@ -32,51 +32,59 @@ resource "aws_codepipeline" "this" {
     }
   }
 
-  stage {
-    name = "Validation"
-    dynamic "action" {
-      for_each = var.tags == "" ? local.validation_stages : local.conditional_validation_stages
-      content {
-        name            = action.key
-        category        = "Test"
-        owner           = "AWS"
-        provider        = "CodeBuild"
-        input_artifacts = ["source_output"]
-        version         = "1"
+  dynamic "stage" {
+    for_each = length(local.enabled_validation_stages) > 0 ? [1] : []
+    content {
+      name = "Validation"
+      dynamic "action" {
+        for_each = local.enabled_validation_stages
+        content {
+          name            = action.key
+          category        = "Test"
+          owner           = "AWS"
+          provider        = "CodeBuild"
+          input_artifacts = ["source_output"]
+          version         = "1"
 
-        configuration = {
-          ProjectName = module.validation[action.key].codebuild_project.name
+          configuration = {
+            ProjectName = module.validation[action.key].codebuild_project.name
+          }
         }
       }
     }
   }
 
-  stage {
-    name = "Plan"
-    action {
-      name            = "Plan"
-      category        = "Build"
-      owner           = "AWS"
-      provider        = "CodeBuild"
-      input_artifacts = ["source_output"]
-      version         = "1"
-      run_order       = 1
+  dynamic "stage" {
+    for_each = var.stages.plan ? [1] : []
+    content {
+      name = "Plan"
+      action {
+        name            = "Plan"
+        category        = "Build"
+        owner           = "AWS"
+        provider        = "CodeBuild"
+        input_artifacts = ["source_output"]
+        version         = "1"
+        run_order       = 1
 
-      configuration = {
-        ProjectName = module.plan.codebuild_project.name
+        configuration = {
+          ProjectName = module.plan[0].codebuild_project.name
+        }
       }
-    }
-    action {
-      name      = "Approval"
-      category  = "Approval"
-      owner     = "AWS"
-      provider  = "Manual"
-      version   = "1"
-      run_order = 2
+      dynamic "action" {
+        for_each = var.stages.approval ? [1] : []
+        content {
+          name      = "Approval"
+          category  = "Approval"
+          owner     = "AWS"
+          provider  = "Manual"
+          version   = "1"
+          run_order = 2
 
-      configuration = {
-        CustomData = "This action will approve the deployment of resources in ${var.pipeline_name}. Please review the plan action before approving."
-
+          configuration = {
+            CustomData = "This action will approve the deployment of resources in ${var.pipeline_name}. Please review the plan action before approving."
+          }
+        }
       }
     }
   }

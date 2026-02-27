@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: MIT-0
 
 module "validation" {
-  for_each              = var.tags == "" ? local.validation_stages : local.conditional_validation_stages
+  for_each              = local.enabled_validation_stages
   source                = "./modules/codebuild"
   codebuild_name        = "${var.pipeline_name}-${each.key}"
   codebuild_role        = aws_iam_role.codebuild_validate.arn
-  environment_variables = var.tags == "" ? local.env_var : local.conditional_env_var
+  environment_variables = local.env_var
   build_timeout         = var.build_timeout
   build_spec            = file("${path.module}/modules/codebuild/buildspecs/${each.key}.yml")
   log_group             = aws_cloudwatch_log_group.this.name
@@ -15,6 +15,7 @@ module "validation" {
 }
 
 module "plan" {
+  count                 = var.stages.plan ? 1 : 0
   source                = "./modules/codebuild"
   codebuild_name        = "${var.pipeline_name}-plan"
   codebuild_role        = aws_iam_role.codebuild_execution.arn

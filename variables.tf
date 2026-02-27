@@ -117,6 +117,24 @@ variable "notifications" {
   default = null
 }
 
+variable "stages" {
+  description = "toggle pipeline stages on or off"
+  type = object({
+    validate = optional(bool, true)
+    fmt      = optional(bool, true)
+    lint     = optional(bool, true)
+    sast     = optional(bool, true)
+    tags     = optional(bool, false)
+    plan     = optional(bool, true)
+    approval = optional(bool, true)
+  })
+  default = {}
+  validation {
+    condition     = !(var.stages.approval && !var.stages.plan)
+    error_message = "approval requires plan to be enabled"
+  }
+}
+
 variable "tags" {
   description = "tags to check for"
   type        = string
