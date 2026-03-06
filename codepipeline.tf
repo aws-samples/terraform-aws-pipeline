@@ -100,10 +100,10 @@ resource "aws_codepipeline" "this" {
 
 resource "aws_iam_role" "codepipeline_role" {
   name               = "${var.pipeline_name}-role"
-  assume_role_policy = data.aws_iam_policy_document.codepipeline-assume-role.json
+  assume_role_policy = data.aws_iam_policy_document.codepipeline_assume_role.json
 }
 
-data "aws_iam_policy_document" "codepipeline-assume-role" {
+data "aws_iam_policy_document" "codepipeline_assume_role" {
   statement {
     effect  = "Allow"
     actions = ["sts:AssumeRole"]

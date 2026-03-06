@@ -5,11 +5,11 @@ locals {
   validation_stages = {
     validate = "hashicorp/terraform:${var.terraform_version}"
     fmt      = "hashicorp/terraform:${var.terraform_version}"
-    lint     = "aws/codebuild/amazonlinux2-x86_64-standard:5.0"
-    sast     = "aws/codebuild/amazonlinux2-x86_64-standard:5.0"
+    lint     = var.codebuild_image
+    sast     = var.codebuild_image
   }
   conditional_validation_stages = merge(local.validation_stages, {
-    tags = "aws/codebuild/amazonlinux2-x86_64-standard:5.0"
+    tags = var.codebuild_image
   })
 
   env_var = {

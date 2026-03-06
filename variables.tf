@@ -56,7 +56,7 @@ variable "checkov_skip" {
 
 variable "checkov_version" {
   type    = string
-  default = "3.2.0"
+  default = "3.2.507"
   validation {
     condition     = can(regex("^\\d+\\.\\d+\\.\\d+$", var.checkov_version))
     error_message = "checkov version must use format x.y.z"
@@ -76,7 +76,7 @@ variable "connection" {
 }
 
 variable "detect_changes" {
-  description = "allows third-party servicesm like GitHub to invoke the pipeline"
+  description = "allows third-party services like GitHub to invoke the pipeline"
   type        = bool
   default     = false
 }
@@ -134,7 +134,7 @@ variable "tagnag_version" {
 
 variable "terraform_version" {
   type    = string
-  default = "1.8.0"
+  default = "1.14.4"
   validation {
     condition     = can(regex("^\\d+\\.\\d+\\.\\d+$", var.terraform_version))
     error_message = "terraform version must use format x.y.z"
@@ -143,11 +143,17 @@ variable "terraform_version" {
 
 variable "tflint_version" {
   type    = string
-  default = "0.55.0"
+  default = "0.61.0"
   validation {
     condition     = can(regex("^\\d+\\.\\d+\\.\\d+$", var.tflint_version))
     error_message = "tflint version must use format x.y.z"
   }
+}
+
+variable "codebuild_image" {
+  description = "CodeBuild image for validation stages (lint, sast, tags)"
+  type        = string
+  default     = "aws/codebuild/amazonlinux2-x86_64-standard:5.0"
 }
 
 variable "vpc" {
