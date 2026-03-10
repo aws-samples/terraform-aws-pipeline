@@ -134,7 +134,7 @@ variable "tagnag_version" {
 
 variable "terraform_version" {
   type    = string
-  default = "1.14.4"
+  default = "1.12.0"
   validation {
     condition     = can(regex("^\\d+\\.\\d+\\.\\d+$", var.terraform_version))
     error_message = "terraform version must use format x.y.z"
