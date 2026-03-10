@@ -56,7 +56,7 @@ variable "checkov_skip" {
 
 variable "checkov_version" {
   type    = string
-  default = "3.2.507"
+  default = "3.2.0"
   validation {
     condition     = can(regex("^\\d+\\.\\d+\\.\\d+$", var.checkov_version))
     error_message = "checkov version must use format x.y.z"
