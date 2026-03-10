@@ -76,7 +76,7 @@ variable "connection" {
 }
 
 variable "detect_changes" {
-  description = "allows third-party servicesm like GitHub to invoke the pipeline"
+  description = "allows third-party services like GitHub to invoke the pipeline"
   type        = bool
   default     = false
 }
@@ -134,7 +134,7 @@ variable "tagnag_version" {
 
 variable "terraform_version" {
   type    = string
-  default = "1.8.0"
+  default = "1.12.0"
   validation {
     condition     = can(regex("^\\d+\\.\\d+\\.\\d+$", var.terraform_version))
     error_message = "terraform version must use format x.y.z"
@@ -143,7 +143,7 @@ variable "terraform_version" {
 
 variable "tflint_version" {
   type    = string
-  default = "0.55.0"
+  default = "0.61.0"
   validation {
     condition     = can(regex("^\\d+\\.\\d+\\.\\d+$", var.tflint_version))
     error_message = "tflint version must use format x.y.z"
