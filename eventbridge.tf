@@ -81,5 +81,19 @@ data "aws_iam_policy_document" "eventbridge" {
       aws_codepipeline.this.arn
     ]
   }
+
+  dynamic "statement" {
+    for_each = var.pr_pipeline && var.connection == null ? [var.pr_pipeline] : []
+    content {
+      effect = "Allow"
+      actions = [
+        "ssm:StartAutomationExecution"
+      ]
+      resources = [
+        aws_ssm_document.this[0].arn
+      ]
+    }
+  }
+
 }
 
