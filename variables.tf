@@ -117,6 +117,18 @@ variable "notifications" {
   default = null
 }
 
+variable "plan" {
+  description = "enable plan and manual approval stage"
+  type        = bool
+  default     = true
+}
+
+variable "pr_pipeline" {
+  description = "deploy a second pipeline to run plans for PRs"
+  type        = bool
+  default     = false
+}
+
 variable "tags" {
   description = "tags to check for"
   type        = string

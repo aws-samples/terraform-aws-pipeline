@@ -26,4 +26,6 @@ locals {
   })
 
   region = data.aws_region.current.name
+
+  pr_pipeline = "${var.pipeline_name}-pr"
 }
